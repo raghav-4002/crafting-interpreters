@@ -1,6 +1,7 @@
 package com.craftinginterpreters.lox;
 
 import java.io.BufferedReader;
+import java.io.IO;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
@@ -10,95 +11,92 @@ import java.util.List;
 
 public class Lox 
 {
-    static boolean hadError = false; 
+    static boolean hadError = false;
 
     public static void main(String[] args) throws IOException
     {
-        /* More than 1 args are provided */
-        if (args.length > 1)
-        {
+        /* If more than one arguments are provided */
+        if (args.length > 1) {
             System.out.println("Usage: jlox [script]");
             System.exit(64);
         }
 
-        /* Run the script from the file */
-        else if (args.length == 1)
-        {
+        /* If a single argument (script) is provided */
+        else if (args.length == 1){
             runFile(args[0]);
-        }
+        } 
 
-        /* Start the interactive session */
-        else
-        {
+        /* If no argument is provided, run the interactive mode */
+        else {
             runPrompt();
         }
     }
 
-    /* Runs the program from a file */ 
+    /* Running a script */
     private static void runFile(String path) throws IOException
     {
+        /* Read the contents of the file in the provided `path` */
         byte[] bytes = Files.readAllBytes(Paths.get(path));
+
+        /* Execute the contents of the file */
         run(new String(bytes, Charset.defaultCharset()));
+
+        /* Indicate an error in the exit code */
+        if (hadError) {
+            System.exit(65);
+        }
     }
 
-    /* Start an interactive session */
+    /* Running in an interactive mode */
     private static void runPrompt() throws IOException
     {
-        /* Creates an input stream?? */
+        /* Create standard input stream object */
         InputStreamReader input = new InputStreamReader(System.in);
 
-        /* An object that reads from the stream `input` */
+        /* Create an object that can read from the stream `input` */
         BufferedReader reader = new BufferedReader(input);
 
-        for (;;)
-        {
-            System.out.println("> ");
+        for(;;) {
+            System.out.print("> ");
             String line = reader.readLine();
 
-            /* If ctrl-d is pressed */
-            if (line == null)
-            {
+            /* If user pressed ctrl-d */
+            if (line == null) {
                 break;
             }
 
             run(line);
 
+            /* Reset the flag */
             hadError = false;
         }
     }
 
+    /* The actual runner */
     private static void run(String source)
     {
-        /* Create an object of type `Scanner` */
         Scanner scanner = new Scanner(source);
 
-        /* Create a list of type `Token` which has scanned tokens */
+        /* Store the scanned tokens in a list */
         List<Token> tokens = scanner.scanTokens();
 
-
-        /* For now, just print the tokens */
-        for (Token token : tokens)
-        {
+        // For now, just print the tokens
+        for (Token token : tokens) {
             System.out.println(token);
         }
-
-        if (hadError)
-        {
-            System.exit(65);
-        }
     }
+
+    /* ========== Error Handling =========== */
 
     static void error(int line, String message)
     {
         report(line, "", message);
     }
 
-    private static void report(int line, String where,
-                                String message)
+    private static void report(int line, String where, String message)
     {
-        System.err.println
-        (
-            "[line " + line + "] Error" + where + ": " + message
+        System.err.println(
+            "[line " + line + "] Error" + where + ": " + message 
         );
 
         hadError = true;
