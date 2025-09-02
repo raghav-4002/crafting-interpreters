@@ -159,11 +159,11 @@ class Scanner
             // Consume the '.'
             advance();
 
-            while (isDigit(peek()) advance();
+            while (isDigit(peek())) advance();
         }
 
         addToken(NUMBER, 
-            Double.parseDouble(source.substring(start, current));
+            Double.parseDouble(source.substring(start, current)));
     }
 
     private void string()
@@ -212,7 +212,7 @@ class Scanner
 
     private char peekNext()
     {
-        if (current + 1 >= source.lenght()) return '\0';
+        if (current + 1 >= source.length()) return '\0';
         return source.charAt(current + 1);
     }
 

@@ -13,10 +13,10 @@ enum TokenType
     LESS, LESS_EQUAL,
 
     /* Literals */
-    IDENTIFIERS, STRING, NUMBER,
+    IDENTIFIER, STRING, NUMBER,
 
     /* Keywords */
-    AND, CLASS, ELSE, FALSE, FUN, IF, NIL, OR,
+    AND, CLASS, ELSE, FALSE, FUN, IF, NIL, OR, FOR,
     PRINT, RETURN, SUPER, THIS, TRUE, VAR, WHILE,
 
     EOF
