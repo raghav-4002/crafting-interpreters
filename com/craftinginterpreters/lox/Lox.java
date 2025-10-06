@@ -78,11 +78,12 @@ public class Lox
 
         /* Store the scanned tokens in a list */
         List<Token> tokens = scanner.scanTokens();
+        Parser parser = new Parser(tokens);
+        Expr expression = parser.parse();
 
-        // For now, just print the tokens
-        for (Token token : tokens) {
-            System.out.println(token);
-        }
+        if (hadError) return;
+
+        System.out.println(new AstPrinter().print(expression));
     }
 
     /* ========== Error Handling =========== */
@@ -99,5 +100,15 @@ public class Lox
         );
 
         hadError = true;
+    }
+
+    static void error(Token token, String message)
+    {
+        if (token.type == TokenType.EOF) {
+            report(token.line, " at end", message);
+        }
+        else {
+            report(token.line, " at '" + token.lexeme + "'", message);
+        }
     }
 }
